@@ -83,7 +83,7 @@ app.delete( '/api/qa/check_list',[
     }
     
     try {
-        const sql = "DELETE FROM Check_List WHERE Check_List_Id = '"+req.body.CheckListId+"' ;";
+        const sql = "DELETE FROM check_list WHERE check_list_Id = '"+req.body.CheckListId+"' ;";
         console.log(sql)
         const result = db.query(sql, (err, data) => {
             if(err) {
@@ -197,7 +197,7 @@ app.put( '/api/qa/dashboard',[
 
     // console.log( 'dashboard',datos );
 
-    const script = "UPDATE DASHBOARD SET cantidad = cantidad + ? where id = ?; "; // 2 parametros
+    const script = "UPDATE dashboard SET cantidad = cantidad + ? where id = ?; "; // 2 parametros
 
     const output = db.execute(script, datos, (err, data) => {         
         if(err) {
@@ -213,7 +213,7 @@ app.put( '/api/qa/dashboard',[
 // GetAll_Dashboard
 app.get( '/api/qa/dashboard', async (req, res) => {    
         
-    const sql = "SELECT * FROM DASHBOARD ;";
+    const sql = "SELECT * FROM dashboard ;";
 
     const result =  db.query(sql, (err, data) => {
 
@@ -335,7 +335,7 @@ app.patch( '/api/qa/etapa' , async (req, res) => {
         req.body.etapaId
     ]
     
-    const sql = "UPDATE PROY_ETAPAS "+
+    const sql = "UPDATE proy_etapas "+
     "SET Estado=? , FECHA_FINAL =NOW() WHERE PROYECTO_ID = ? and Etapa_Id= ?"
     
     //console.log( PATCH_Proyecto_Etapa,sql )
@@ -479,7 +479,7 @@ app.patch( '/api/qa/proyecto' , async (req, res) => {
         req.body.id
     ]
     
-    const sql = "UPDATE PROYECTOS SET ESTADO=? WHERE PROYECTO_ID = ? ;" 
+    const sql = "UPDATE proyectos SET ESTADO=? WHERE PROYECTO_ID = ? ;" 
     //+"UPDATE PROY_ETAPAS SET FECHA_FINAL =NOW() WHERE PROYECTO_ID = "+req.body.id+" ;"
     
     //console.log( sql )
@@ -763,7 +763,7 @@ app.delete( '/api/qa/user/:userName', [
     }
     
     try {
-        const sql = "DELETE FROM USUARIOS WHERE username = '"+req.body.userName+"' ;";
+        const sql = "DELETE FROM usuarios WHERE username = '"+req.body.userName+"' ;";
         console.log(sql)
         const result = db.query(sql, (err, data) => {
             if(err) return res.json("Error API: "+err);
@@ -842,7 +842,7 @@ app.get( '/api/qa/users' , (req, res) => {
 // Login
 app.get( '/api/qa/login/:username/:pwd' , (req, res) => {        
     console.log('user: ' + req.params.username);
-    const sql = "SELECT Username,Fullname,Rol_Id,Estado FROM USUARIOS where username='" + req.params.username + "' and pwd='"+ req.params.pwd +"'";
+    const sql = "SELECT Username,Fullname,Rol_Id,Estado FROM usuarios where username='" + req.params.username + "' and pwd='"+ req.params.pwd +"'";
     db.query(sql, (err, data) => {
 
         if(err) return res.json("Error API: "+err);
