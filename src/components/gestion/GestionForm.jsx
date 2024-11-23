@@ -641,7 +641,7 @@ const GestionForm = ({fronted,backend})=> {
                 </div>
 
                 <div className="col-md-4">
-                    <label htmlFor="" className="form-label">Producto Owner</label> 
+                    <label htmlFor="po" className="form-label">Producto Owner</label> 
                     <select name="po" value={po} onChange={onChangeUser} onClick={onChangeUser} className="form-select" >
                         <option value=' '></option>
                         {users.map((item, index)=>(
@@ -651,7 +651,7 @@ const GestionForm = ({fronted,backend})=> {
                 </div> 
 
                 <div className="col-md-3">
-                    <label htmlFor="" className="form-label">Fecha de creación</label>
+                    <label htmlFor="created" className="form-label">Fecha de creación</label>
                     <input type="date" value={created} onChange={onChangeCreated} onClick={onChangeCreated} name="created" className="form-control"/>
                 </div>       
 
@@ -660,7 +660,7 @@ const GestionForm = ({fronted,backend})=> {
             <div className="row mt-3" style={{display: user.rol_id == 2 ?'none': 'flex' }}>
 
                 <div className="col-md-4">
-                    <label htmlFor="" className="form-label">Estado de Proyecto</label>                         
+                    <label htmlFor="estado" className="form-label">Estado de Proyecto</label>                         
                     <select name="estado" value={estado} onChange={onChangeEstado} onClick={onChangeEstado} className="form-select" >
                         <option value=' '></option>
                         {estados.map((item, index)=>(
@@ -670,7 +670,7 @@ const GestionForm = ({fronted,backend})=> {
                 </div>          
                 
                 <div className="col-md-4 mt-2">
-                    <label className="control-label">Etapa</label>
+                    <label htmlFor="etapa" className="control-label">Etapa</label>
                     <input value={etapa} type="text" name="etapa" className="form-control" readOnly={true} />
                 </div>
 
@@ -698,13 +698,13 @@ const GestionForm = ({fronted,backend})=> {
                 </div>
 
                 <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                    <label className="control-label">Manual Técnico</label>
+                    <label htmlFor="manualTecnico" className="control-label">Manual Técnico</label>
                     <input  type="file" name="manualTecnico" onChange={onChangeManualTecnico} className="form-control" id="manualTec"/>
                     {/* value={manualTecnico} no works */}
                 </div>
                 
                 <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                    <label className="control-label">Código Fuente</label>
+                    <label htmlFor="manualDespliegue" className="control-label">Código Fuente</label>
                     <input  type="file" name="manualDespliegue" onChange={onChangeManualDeploy} className="form-control" />
                     {/* value={manualDeploy} no works */}
                 </div>
@@ -728,7 +728,7 @@ const GestionForm = ({fronted,backend})=> {
                 </div>
 
                 <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                    <label className="control-label">Cronograma</label>
+                    <label htmlFor="cronograma" className="control-label">Cronograma</label>
                     <input  type="file" name="cronograma" onChange={onChangeCronograma} className="form-control" />
                     {/* value={cronograma} no works */}
                 </div>
@@ -785,12 +785,12 @@ const GestionForm = ({fronted,backend})=> {
 
             <div className="row mt-3" style={{display: user.rol_id == 2 ?'none': 'flex' }}>
                 <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                    <label className="control-label">Fecha Inicio</label>
+                    <label htmlFor="fechaInicio" className="control-label">Fecha Inicio</label>
                     <input value={fechaInicio||''} type="date" name="fechaInicio" onChange={onChangeFechaIni} onClick={onChangeFechaIni} className="form-control" />
                 </div>
           
                 <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                    <label className="control-label">Fecha cierre</label>
+                    <label htmlFor="fechaFinal" className="control-label">Fecha cierre</label>
                     <input value={fechaFinal||''} type="date" name="fechaFinal" onChange={onChangeFechaFin} onClick={onChangeFechaFin} className="form-control" />
                 </div>
             </div>
