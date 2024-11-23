@@ -35,14 +35,15 @@ const GestionList = ({backend}) => {
         //console.log(response);
         const data = await response.json();
         console.log('Etapas: ',data);
-        await setEtapas(data); // all        
+        await setEtapas(data); // all    
+        getProys();     
         return data; // all
     }
 
     // Evento Load
     useEffect(()=>{
         getEtapas()
-        getProys(); 
+        
     },[])
 
     const onRevision = (Proyecto_Id) => {
