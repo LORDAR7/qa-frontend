@@ -614,200 +614,203 @@ const GestionForm = ({fronted,backend})=> {
     // VISTA HTML
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     return (
-        <div >
-        <div style={{display: user.rol_id == 3 ? 'block' : 'none'}}>
-            <h1>ACCESSO RESTRINGIDO</h1>
-            <hr></hr>
-            <p>No tiene accesso a este contenido.</p>
+    
+	<div>
+    <div style={{display: user.rol_id == 3 ? 'block' : 'none'}}>
+        <h1>ACCESSO RESTRINGIDO</h1>
+        <hr></hr>
+        <p>No tiene accesso a este contenido.</p>
+    </div>
+    
+    <form onSubmit={handlerSubmit} className="mb-3">  
+        
+        <div className="row mt-3">
+            <div className="col-md-8">
+                <h1>Proyecto</h1>
+            </div>
+            <div className="col-md-4 mt-2" style={{textAlign:"right"}}>
+                <h2>Correlativo: {proyectId}</h2>
+            </div>
+        </div>      
+        
+        <hr></hr>
+        
+        <div className="row mt-3" style={{display: user.rol_id == 2 ? 'none': 'flex' }}>
+
+            <div className="col-md-4">
+                <label htmlFor="proyName" className="form-label">Nombre del proyecto</label>
+                <input value={proyName} type="text" onChange={onChangeProyName} name="proyName" className="form-control"/>
+            </div>
+
+            <div className="col-md-4">
+                <label htmlFor="" className="form-label">Producto Owner</label> 
+                <select name="po" value={po} onChange={onChangeUser} onClick={onChangeUser} className="form-select" >
+                    <option value=' '></option>
+                    {users.map((item, index)=>(
+                        <option key={index} value={item.Fullname}>{item.Fullname}</option>
+                    ))}                           
+                </select>                        
+            </div> 
+
+            <div className="col-md-3">
+                <label htmlFor="" className="form-label">Fecha de creación</label>
+                <input type="date" value={created} onChange={onChangeCreated} onClick={onChangeCreated} name="created" className="form-control"/>
+            </div>       
+
         </div>
-        <form onSubmit={handlerSubmit} className="mb-3" style={{display: user.rol_id == 3 ? 'none': 'flex' }}>  
+
+        <div className="row mt-3" style={{display: user.rol_id == 2 ?'none': 'flex' }}>
+
+            <div className="col-md-4">
+                <label htmlFor="" className="form-label">Estado de Proyecto</label>                         
+                <select name="estado" value={estado} onChange={onChangeEstado} onClick={onChangeEstado} className="form-select" >
+                    <option value=' '></option>
+                    {estados.map((item, index)=>(
+                        <option key={index} value={item.estado}>{item.estado}</option>
+                    ))}                           
+                </select>
+            </div>          
             
-            <div className="row mt-3">
-                <div className="col-md-8">
-                    <h1>Proyecto</h1>
-                </div>
-                <div className="col-md-4 mt-2" style={{textAlign:"right"}}>
-                    <h2>Correlativo: {proyectId}</h2>
-                </div>
-            </div>      
-            
-            <hr></hr>
-            
-            <div className="row mt-3" style={{display: user.rol_id == 2 ? 'none': 'flex' }}>
-
-                <div className="col-md-4">
-                    <label htmlFor="proyName" className="form-label">Nombre del proyecto</label>
-                    <input value={proyName} type="text" onChange={onChangeProyName} name="proyName" className="form-control"/>
-                </div>
-
-                <div className="col-md-4">
-                    <label htmlFor="po" className="form-label">Producto Owner</label> 
-                    <select name="po" value={po} onChange={onChangeUser} onClick={onChangeUser} className="form-select" >
-                        <option value=' '></option>
-                        {users.map((item, index)=>(
-                            <option key={index} value={item.Fullname}>{item.Fullname}</option>
-                        ))}                           
-                    </select>                        
-                </div> 
-
-                <div className="col-md-3">
-                    <label htmlFor="created" className="form-label">Fecha de creación</label>
-                    <input type="date" value={created} onChange={onChangeCreated} onClick={onChangeCreated} name="created" className="form-control"/>
-                </div>       
-
+            <div className="col-md-4 mt-2">
+                <label className="control-label">Etapa</label>
+                <input value={etapa} type="text" name="etapa" className="form-control" readOnly={true} />
             </div>
 
-            <div className="row mt-3" style={{display: user.rol_id == 2 ?'none': 'flex' }}>
-
-                <div className="col-md-4">
-                    <label htmlFor="estado" className="form-label">Estado de Proyecto</label>                         
-                    <select name="estado" value={estado} onChange={onChangeEstado} onClick={onChangeEstado} className="form-select" >
-                        <option value=' '></option>
-                        {estados.map((item, index)=>(
-                            <option key={index} value={item.estado}>{item.estado}</option>
-                        ))}                           
-                    </select>
-                </div>          
-                
-                <div className="col-md-4 mt-2">
-                    <label htmlFor="etapa" className="control-label">Etapa</label>
-                    <input value={etapa} type="text" name="etapa" className="form-control" readOnly={true} />
-                </div>
-
-                <div className="col-lg-3 col-md-3 col-sm-6 col-xs-12 mt-2">
-                    <label htmlFor="revision" className="control-label">Revisión</label>                    
-                    <input value={revision}  type="text" name="revision" readOnly={true} className="form-control right" />
-                </div>
-
-            </div>
-            
-            <br className="mt-3z"></br>
-            <hr></hr>
-            <h4>Datos del Developer</h4>
-            
-            <div className="row form-group">
-                
-                <div className="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                    <label htmlFor="dev" className="control-label">Developer</label>
-                    <select name="dev" value={dev} onChange={onChangeDev} onClick={onChangeDev} className="form-select" >
-                        <option value=' '></option>
-                        {devs.map((item, index)=>(
-                            <option key={index} value={item.Fullname}>{item.Fullname}</option>
-                        ))}
-                    </select>                            
-                </div>
-
-                <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                    <label htmlFor="manualTecnico" className="control-label">Manual Técnico</label>
-                    <input  type="file" name="manualTecnico" onChange={onChangeManualTecnico} className="form-control" id="manualTec"/>
-                    {/* value={manualTecnico} no works */}
-                </div>
-                
-                <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                    <label htmlFor="manualDespliegue" className="control-label">Código Fuente</label>
-                    <input  type="file" name="manualDespliegue" onChange={onChangeManualDeploy} className="form-control" />
-                    {/* value={manualDeploy} no works */}
-                </div>
-
+            <div className="col-lg-3 col-md-3 col-sm-6 col-xs-12 mt-2">
+                <label htmlFor="revision" className="control-label">Revisión</label>                    
+                <input value={revision}  type="text" name="revision" readOnly={true} className="form-control right" />
             </div>
 
-            <br className="mt-3z"></br>
-            <hr></hr>
-            <h4>Datos del QA Tester</h4>
-
-            <div className="row form-group" style={{display: user.rol_id == 2 ?'none': 'flex' }}>
-                
-                <div className="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                    <label htmlFor="tester" className="control-label">QA Tester</label>
-                    <select name="tester" value={tester} onChange={onChangeTester} onClick={onChangeTester} className="form-select" >
-                        <option value=' '></option>
-                        {testers.map((item, index)=>(
-                            <option key={index} value={item.Fullname}>{item.Fullname}</option>
-                        ))}
-                    </select>   
-                </div>
-
-                <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                    <label htmlFor="cronograma" className="control-label">Cronograma</label>
-                    <input  type="file" name="cronograma" onChange={onChangeCronograma} className="form-control" />
-                    {/* value={cronograma} no works */}
-                </div>
-            </div>
-
-            <br className="mt-3z"></br>
-            <hr ></hr>
-            <h4>Recursos para las Pruebas</h4>
-
-            <div className="row form-group" style={{display: user.rol_id == 2 ?'none': 'flex' }}>
-                
-                <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                    <label htmlFor="server" className="control-label">Servidor</label>                    
-                    <select name="server" value={server} onChange={onChangeServer} onClick={onChangeServer} className="form-select" >
-                        <option value=' '></option>
-                        {servers.map((item, index)=>(
-                            <option key={index} value={item.item}>{item.item}</option>
-                        ))}
-                    </select> 
-                </div>
-
-                <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                    <label htmlFor="db" className="control-label">Instancia DB</label>                    
-                    <select name="db" value={db} onChange={onChangeDb} onClick={onChangeDb} className="form-select" >
-                        <option value=' '></option>
-                        {dbs.map((item, index)=>(
-                            <option key={index} value={item.item}>{item.item}</option>
-                        ))}
-                    </select>
-                </div>
-            </div>
-                
-            <div className="row mt-3" style={{display: user.rol_id == 2 ?'none': 'flex' }}>
-                <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                    <label htmlFor="acceso" className="control-label">Accesos</label>
-                    <select name="acceso" value={acceso} onChange={onChangeAccesos} onClick={onChangeAccesos} className="form-select" >
-                        <option value=' '></option>
-                        {accesos.map((item, index)=>(
-                            <option key={index} value={item.item}>{item.item}</option>
-                        ))}
-                    </select>
-                </div>
-
-                <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                    <label htmlFor="permiso" className="control-label">Permisos</label>
-                    <select name="permiso" value={permiso} onChange={onChangePermisos} onClick={onChangePermisos} className="form-select" >
-                        <option value=' '></option>
-                        {permisos.map((item, index)=>(
-                            <option key={index} value={item.item}>{item.item}</option>
-                        ))}
-                    </select>
-                </div>
-            </div>
-
-            <div className="row mt-3" style={{display: user.rol_id == 2 ?'none': 'flex' }}>
-                <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                    <label htmlFor="fechaInicio" className="control-label">Fecha Inicio</label>
-                    <input value={fechaInicio||''} type="date" name="fechaInicio" onChange={onChangeFechaIni} onClick={onChangeFechaIni} className="form-control" />
-                </div>
-          
-                <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                    <label htmlFor="fechaFinal" className="control-label">Fecha cierre</label>
-                    <input value={fechaFinal||''} type="date" name="fechaFinal" onChange={onChangeFechaFin} onClick={onChangeFechaFin} className="form-control" />
-                </div>
-            </div>
-            
-            <br className="mt-3z"></br>
-            <hr></hr>
-            <div className="row mt-3">
-                <div className="col-md-12 contenedor">                
-                    <button type="submit" className="btn btn-primary" style={{width:150 +'px'}}>Guardar</button> 
-                    <span style={{width:50+"px"}}></span>
-                    <button onClick={() => navigate('/gestion')} type="button" className="btn btn-warning"  style={{width:150 +'px'}}>Cancelar</button>
-                    
-                </div>
-            </div>
-            
-        </form>
         </div>
+        
+        <br className="mt-3z"></br>
+        <hr></hr>
+        <h4>Datos del Developer</h4>
+        
+        <div className="row form-group">
+            
+            <div className="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                <label htmlFor="dev" className="control-label">Developer</label>
+                <select name="dev" value={dev} onChange={onChangeDev} onClick={onChangeDev} className="form-select" >
+                    <option value=' '></option>
+                    {devs.map((item, index)=>(
+                        <option key={index} value={item.Fullname}>{item.Fullname}</option>
+                    ))}
+                </select>                            
+            </div>
+
+            <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                <label className="control-label">Manual Técnico</label>
+                <input  type="file" name="manualTecnico" onChange={onChangeManualTecnico} className="form-control" id="manualTec"/>
+                {/* value={manualTecnico} no works */}
+            </div>
+            
+            <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                <label className="control-label">Código Fuente</label>
+                <input  type="file" name="manualDespliegue" onChange={onChangeManualDeploy} className="form-control" />
+                {/* value={manualDeploy} no works */}
+            </div>
+
+        </div>
+
+        <br className="mt-3z"></br>
+        <hr></hr>
+        <h4>Datos del QA Tester</h4>
+
+        <div className="row form-group" style={{display: user.rol_id == 2 ?'none': 'flex' }}>
+            
+            <div className="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label htmlFor="tester" className="control-label">QA Tester</label>
+                <select name="tester" value={tester} onChange={onChangeTester} onClick={onChangeTester} className="form-select" >
+                    <option value=' '></option>
+                    {testers.map((item, index)=>(
+                        <option key={index} value={item.Fullname}>{item.Fullname}</option>
+                    ))}
+                </select>   
+            </div>
+
+            <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                <label className="control-label">Cronograma</label>
+                <input  type="file" name="cronograma" onChange={onChangeCronograma} className="form-control" />
+                {/* value={cronograma} no works */}
+            </div>
+        </div>
+
+        <br className="mt-3z"></br>
+        <hr ></hr>
+        <h4>Recursos para las Pruebas</h4>
+
+        <div className="row form-group" style={{display: user.rol_id == 2 ?'none': 'flex' }}>
+            
+            <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                <label htmlFor="server" className="control-label">Servidor</label>                    
+                <select name="server" value={server} onChange={onChangeServer} onClick={onChangeServer} className="form-select" >
+                    <option value=' '></option>
+                    {servers.map((item, index)=>(
+                        <option key={index} value={item.item}>{item.item}</option>
+                    ))}
+                </select> 
+            </div>
+
+            <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                <label htmlFor="db" className="control-label">Instancia DB</label>                    
+                <select name="db" value={db} onChange={onChangeDb} onClick={onChangeDb} className="form-select" >
+                    <option value=' '></option>
+                    {dbs.map((item, index)=>(
+                        <option key={index} value={item.item}>{item.item}</option>
+                    ))}
+                </select>
+            </div>
+        </div>
+            
+        <div className="row mt-3" style={{display: user.rol_id == 2 ?'none': 'flex' }}>
+            <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                <label htmlFor="acceso" className="control-label">Accesos</label>
+                <select name="acceso" value={acceso} onChange={onChangeAccesos} onClick={onChangeAccesos} className="form-select" >
+                    <option value=' '></option>
+                    {accesos.map((item, index)=>(
+                        <option key={index} value={item.item}>{item.item}</option>
+                    ))}
+                </select>
+            </div>
+
+            <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                <label htmlFor="permiso" className="control-label">Permisos</label>
+                <select name="permiso" value={permiso} onChange={onChangePermisos} onClick={onChangePermisos} className="form-select" >
+                    <option value=' '></option>
+                    {permisos.map((item, index)=>(
+                        <option key={index} value={item.item}>{item.item}</option>
+                    ))}
+                </select>
+            </div>
+        </div>
+
+        <div className="row mt-3" style={{display: user.rol_id == 2 ?'none': 'flex' }}>
+            <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                <label className="control-label">Fecha Inicio</label>
+                <input value={fechaInicio||''} type="date" name="fechaInicio" onChange={onChangeFechaIni} onClick={onChangeFechaIni} className="form-control" />
+            </div>
+      
+            <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                <label className="control-label">Fecha cierre</label>
+                <input value={fechaFinal||''} type="date" name="fechaFinal" onChange={onChangeFechaFin} onClick={onChangeFechaFin} className="form-control" />
+            </div>
+        </div>
+        
+        <br className="mt-3z"></br>
+        <hr></hr>
+        <div className="row mt-3">
+            <div className="col-md-12 contenedor">                
+                <button type="submit" className="btn btn-primary" style={{width:150 +'px'}}>Guardar</button> 
+                <span style={{width:50+"px"}}></span>
+                <button onClick={() => navigate('/gestion')} type="button" className="btn btn-warning"  style={{width:150 +'px'}}>Cancelar</button>
+                
+            </div>
+        </div>
+        
+    </form>
+</div>
+    
     )
 }
 
