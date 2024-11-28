@@ -328,7 +328,7 @@ CREATE TABLE `revision` (
 
 LOCK TABLES `revision` WRITE;
 /*!40000 ALTER TABLE `revision` DISABLE KEYS */;
-INSERT INTO `revision` VALUES (154,1,1,'2024-11-17 20:28:58','En Proceso',0,0,0,0,0),(158,1,1,'2024-11-17 20:36:48','En Proceso',0,0,0,0,0),(159,1,1,'2024-11-17 20:57:16','En Proceso',0,0,0,0,0),(154,2,1,'2024-11-17 20:32:04','En Proceso',0,0,0,0,0),(158,2,1,'2024-11-17 20:46:17','En Proceso',0,0,0,0,0),(159,2,1,'2024-11-17 21:00:57','En Proceso',0,0,0,0,0),(158,3,1,'2024-11-17 20:50:38','En Proceso',0,0,0,0,0),(158,4,1,'2024-11-17 20:52:57','En Proceso',0,0,0,0,0),(159,1,2,'2024-11-17 00:00:00','En revision',0,0,NULL,NULL,NULL),(158,4,2,'2024-11-19 00:00:00','En revision',0,0,NULL,NULL,NULL),(158,4,3,'2024-11-19 00:00:00','En revision',0,0,NULL,NULL,NULL);
+INSERT INTO `revision` VALUES (154,1,1,'2024-11-17 20:28:58','En Proceso',0,0,0,0,0),(158,1,1,'2024-11-17 20:36:48','En Proceso',0,0,0,0,0),(159,1,1,'2024-11-17 20:57:16','En Proceso',0,0,0,0,0),(154,2,1,'2024-11-17 20:32:04','En Proceso',0,0,0,0,0),(158,2,1,'2024-11-17 20:46:17','En Proceso',0,0,0,0,0),(159,2,1,'2024-11-17 21:00:57','En Proceso',0,0,0,0,0),(158,3,1,'2024-11-17 20:50:38','En Proceso',0,0,0,0,0),(158,4,1,'2024-11-17 20:52:57','En Proceso',0,0,0,0,0),(159,1,2,'2024-11-17 00:00:00','En Revision',0,0,NULL,NULL,NULL),(158,4,2,'2024-11-19 00:00:00','En Revision',0,0,NULL,NULL,NULL),(158,4,3,'2024-11-19 00:00:00','En Revision',0,0,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `revision` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -430,7 +430,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Delete_Check_List`(
 	IN p_CheckListId  int		
 )
 BEGIN
-	DELETE FROM check_list WHERE CheckListId = p_CheckListId ;
+	DELETE FROM Check_List WHERE CheckListId = p_CheckListId ;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -480,7 +480,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Insert_Adjunto`(
     IN p_User_Created VARCHAR(24)
 )
 BEGIN
-    INSERT INTO adjuntos (
+    INSERT INTO Adjuntos (
 		Proyecto_Id, 
 		Etapa_Id, 
 		Revision_Id, 
@@ -521,14 +521,14 @@ BEGIN
     DECLARE v_count INT;
 
     SELECT COUNT(*) INTO v_count
-    FROM check_list
+    FROM Check_List
     WHERE Check_List_Id = p_CheckListId;
 
     IF v_count = 0 THEN
-        INSERT INTO check_list (Item, Tipo_Test_Id, Activo)
+        INSERT INTO Check_List (Item, Tipo_Test_Id, Activo)
         VALUES (p_Item, p_TipoTestId, p_Activo);
     ELSE
-        UPDATE check_list
+        UPDATE Check_List
         SET Item = p_Item, Activo = p_Activo
         WHERE Check_List_Id = p_CheckListId;
     END IF;
@@ -559,7 +559,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Insert_Detalle_Revision`(
 BEGIN
 	DECLARE existing_count INT;
     SELECT count(*) INTO existing_count
-    FROM detalle_revision
+    FROM Detalle_Revision
     WHERE Proyecto_Id = p_Proyecto_Id and
 		Etapa_Id = p_Etapa_Id and 
 		Revision_Id = p_Revision_Id and
@@ -567,7 +567,7 @@ BEGIN
         
 	IF( existing_count = 0 ) THEN
 			
-		INSERT INTO detalle_revision (
+		INSERT INTO Detalle_Revision (
 			Proyecto_Id, 
 			Etapa_Id, 
 			Revision_Id, 
@@ -584,7 +584,7 @@ BEGIN
 			p_Fecha
 			);
 		ELSE 
-			UPDATE detalle_revision
+			UPDATE Detalle_Revision
             SET Marcado = p_Marcado , Fecha = p_Fecha
             WHERE Proyecto_Id = p_Proyecto_Id and
 			Etapa_Id = p_Etapa_Id and 
@@ -611,7 +611,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Insert_Etapa`(
     IN p_Etapa VARCHAR(24)
 )
 BEGIN
-    INSERT INTO etapas (Etapa)
+    INSERT INTO Etapas (Etapa)
     VALUES (p_Etapa);
 END ;;
 DELIMITER ;
@@ -637,7 +637,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Insert_Proyecto`(
     ,OUT proyectoId INT
 )
 BEGIN
-    INSERT INTO proyectos (
+    INSERT INTO Proyectos (
 		Nombre, 
 		User_Create, 
 		Created, 
@@ -688,13 +688,13 @@ BEGIN
 	DECLARE v_count INT; 
 
     SELECT COUNT(*) INTO v_count
-    FROM proy_etapas
+    FROM Proy_Etapas
     WHERE Proyecto_Id 	= p_Proyecto_Id
     AND Etapa_Id 		= p_Etapa_Id;
 
     IF v_count = 0 THEN
 			
-		INSERT INTO proy_etapas (
+		INSERT INTO Proy_Etapas (
 			Proyecto_Id, 
 			Etapa_Id, 	
 			Estado, 
@@ -771,7 +771,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Insert_Proy_User`(
     IN p_Estado VARCHAR(24)
 )
 BEGIN
-    INSERT INTO proy_users (Proyecto_Id, Username, Fecha, Estado)
+    INSERT INTO Proy_Users (Proyecto_Id, Username, Fecha, Estado)
     VALUES (p_Proyecto_Id, p_Username, p_Fecha, p_Estado);
 END ;;
 DELIMITER ;
@@ -797,7 +797,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Insert_Revision`(
     IN p_Estado VARCHAR(24)
 )
 BEGIN
-    INSERT INTO revision (Proyecto_Id, Etapa_Id, Revision_Id,  Fecha, Estado, Cantidad_Defectos, Cantidad_Atrasos)  
+    INSERT INTO Revision (Proyecto_Id, Etapa_Id, Revision_Id,  Fecha, Estado, Cantidad_Defectos, Cantidad_Atrasos)  
     VALUES (p_Proyecto_Id, p_Etapa_Id, p_Revision_Id, p_Fecha, p_Estado,0,0);
 	/* SOLO INSERTAR VALORES REQUERIDOS */
 	/* LOS CAMPOS QUE ACEPTAN NULOS SE LLENAN EN EL PROCESO */
@@ -822,7 +822,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Insert_Rol`(
     IN p_Estado VARCHAR(24)
 )
 BEGIN
-    INSERT INTO roles (Rolname, Estado)
+    INSERT INTO Roles (Rolname, Estado)
     VALUES (p_Rolname, p_Estado);
 END ;;
 DELIMITER ;
@@ -844,7 +844,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Insert_Tipo_Test`(
     IN p_Tipo VARCHAR(24)
 )
 BEGIN
-    INSERT INTO tipos_test (Tipo)
+    INSERT INTO Tipos_Test (Tipo)
     VALUES (p_Tipo);
 END ;;
 DELIMITER ;
@@ -871,7 +871,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Insert_Usuario`(
     IN p_Pwd VARCHAR(24)
 )
 BEGIN
-    INSERT INTO usuarios (
+    INSERT INTO Usuarios (
 		Username, 
 		Fullname, 
         Email,
@@ -914,7 +914,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Seleccionar_Revision`(
 	)
 begin
     (SELECT * 
-	FROM revision 
+	FROM Revision 
 	WHERE 
 		Revision_Id = p_Revision_Id AND 
 		Proyecto_Id = p_Proyecto_Id AND 
@@ -937,7 +937,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Seleccionar_Tipo_Test`(p_Tipo_Test_Id INT)
 begin
-    (SELECT * FROM tipos_test WHERE Tipo_Test_Id = p_Tipo_Test_Id);
+    (SELECT * FROM Tipos_Test WHERE Tipo_Test_Id = p_Tipo_Test_Id);
 end ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -956,7 +956,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_SelectAll_Adjuntos`()
 begin
-    (SELECT * FROM adjuntos);
+    (SELECT * FROM Adjuntos);
 end ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -995,7 +995,7 @@ DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_SelectAll_Check_List`()
 begin
 
-    (SELECT * FROM check_list);
+    (SELECT * FROM Check_List);
 end ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1017,7 +1017,7 @@ begin
     (SELECT 
     proyecto_id, etapa_id, revision_id, check_list_id, Marcado, 
     DATE_FORMAT(Fecha, '%d/%m/%Y') as Fecha
-    FROM detalle_revision);
+    FROM Detalle_Revision);
 end ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1036,7 +1036,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_SelectAll_Estados`()
 begin
-    (SELECT * FROM estados);
+    (SELECT * FROM Estados);
 end ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1055,7 +1055,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_SelectAll_Etapas`()
 begin
-    (SELECT * FROM etapas);
+    (SELECT * FROM Etapas);
     end ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1084,10 +1084,10 @@ begin
 			max(pe.etapa_id) as Etapa_Id, 
             -- max(e.Etapa) as Etapa,
 			max(r.revision_id) as Revision_Id
-		FROM proyectos as p
-		INNER JOIN proy_etapas  as pe ON pe.proyecto_id = p.proyecto_id
-        -- INNER JOIN etapas as e ON e.etapa_id = pe.etapa_id
-		INNER JOIN revision as r ON r.proyecto_id = p.proyecto_id and r.etapa_id = pe.etapa_id
+		FROM Proyectos as p
+		INNER JOIN Proy_Etapas  as pe ON pe.proyecto_id = p.proyecto_id
+        -- INNER JOIN Etapas as e ON e.etapa_id = pe.etapa_id
+		INNER JOIN Revision as r ON r.proyecto_id = p.proyecto_id and r.etapa_id = pe.etapa_id
 		group by Proyecto_Id, Nombre, user_create, created, estado   
     ) ;
 end ;;
@@ -1108,7 +1108,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_SelectAll_Proy_Etapas`()
 begin
-    (SELECT * FROM proy_etapas);
+    (SELECT * FROM Proy_Etapas);
 end ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1127,7 +1127,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_SelectAll_Proy_Users`()
 begin
-    (SELECT * FROM proy_users);
+    (SELECT * FROM Proy_Users);
 end ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1146,7 +1146,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_SelectAll_Revision`()
 begin
-    (SELECT * FROM revision);
+    (SELECT * FROM Revision);
 end ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1165,7 +1165,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_SelectAll_Roles`()
 begin
-    (SELECT * FROM roles);
+    (SELECT * FROM Roles);
 end ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1184,7 +1184,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_SelectAll_Tipos_Test`()
 begin
-    (SELECT * FROM tipos_test);
+    (SELECT * FROM Tipos_Test);
 end ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1203,7 +1203,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_SelectAll_Usuarios`()
 begin
-    (SELECT * FROM usuarios);
+    (SELECT * FROM Usuarios);
 end ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1227,7 +1227,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Select_Adjunto`(
 	p_Revision_Id 	INT
 	)
 begin
-    (SELECT * FROM adjuntos 
+    (SELECT * FROM Adjuntos 
 	WHERE 
 	Adjunto_Id 	= p_Adjunto_Id AND 
 	Proyecto_Id = p_Proyecto_Id AND 
@@ -1273,7 +1273,7 @@ DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Select_Check_List`(p_Check_List_Id INT)
 begin
     (SELECT * 
-	FROM check_list 
+	FROM Check_List 
 	WHERE 
 		Check_List_Id = p_Check_List_Id);
 end ;;
@@ -1298,7 +1298,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Select_Detalle_Revision`(
 	p_Etapa_Id INT, 
 	p_Revision_Id INT)
 begin	
-    (SELECT * FROM detalle_revision 
+    (SELECT * FROM Detalle_Revision 
 	WHERE 
 		-- Check_List_Id 	= p_Check_List_Id AND 
 		Proyecto_Id 	= p_Proyecto_Id AND 
@@ -1323,7 +1323,7 @@ DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Select_Estado`(p_Estado_Id INT)
 begin
     (SELECT * 
-	FROM estados 
+	FROM Estados 
 	WHERE 
 		Estado_Id = p_Estado_Id);
 end ;;
@@ -1345,7 +1345,7 @@ DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Select_Etapa`(p_Etapa_Id INT)
 begin
     (SELECT * 
-	FROM etapas 
+	FROM Etapas 
 	WHERE 
 		Etapa_Id = p_Etapa_Id);
 end ;;
@@ -1367,7 +1367,7 @@ DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Select_Proyecto`(p_Proyecto_Id INT)
 begin
     (SELECT * 
-	FROM proyectos 
+	FROM Proyectos 
 	WHERE 
 		Proyecto_Id = p_Proyecto_Id);
 end ;;
@@ -1391,7 +1391,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Select_Proy_Etapa`(
 	-- ,p_Etapa_Id INT
 	)
 begin
-    (SELECT * FROM proy_etapas 
+    (SELECT * FROM Proy_Etapas 
 	WHERE 
 		Proyecto_Id = p_Proyecto_Id 
         -- AND Etapa_Id 	= p_Etapa_Id 
@@ -1418,7 +1418,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Select_Proy_Etapas`(
 	p_Proyecto_Id int
     )
 begin
-    (SELECT * FROM proy_etapas
+    (SELECT * FROM Proy_Etapas
     WHERE 
 		Proyecto_Id = p_Proyecto_Id 
 	);
@@ -1440,7 +1440,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Select_Proy_User`(p_Proyecto_Id INT, p_Username VARCHAR(24))
 begin
-    (SELECT * FROM proy_users WHERE Proyecto_Id = p_Proyecto_Id AND Username = p_Username);
+    (SELECT * FROM Proy_Users WHERE Proyecto_Id = p_Proyecto_Id AND Username = p_Username);
 end ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1464,21 +1464,21 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Select_Revision`(
 BEGIN
 	DECLARE existing_count INT;
     SELECT count(*) INTO existing_count
-    FROM revision     
+    FROM Revision     
 	WHERE 
 		-- Check_List_Id 	= p_Check_List_Id AND 
 		Proyecto_Id 	= p_Proyecto_Id AND 
 		Etapa_Id 		= p_Etapa_Id ;	
         
     IF( existing_count = 0 ) THEN
-		INSERT INTO revision( Proyecto_Id, Etapa_id, Revision_id, Fecha, Estado,
+		INSERT INTO Revision( Proyecto_Id, Etapa_id, Revision_id, Fecha, Estado,
         Cantidad_Defectos, Cantidad_Atrasos, Tasa_Defectos, Tasa_Correcciones, Tiempo_Resolucion) 
         values (p_Proyecto_Id,p_Etapa_Id, 1, now(), 'En Proceso',
         0, 0, 0, 0, 0 );
     END IF;
     
     (SELECT * 
-	FROM revision 
+	FROM Revision 
 	WHERE 		
 		Proyecto_Id = p_Proyecto_Id AND 
 		Etapa_Id 	= p_Etapa_Id
@@ -1503,7 +1503,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Select_Rol`(p_Rol_Id INT)
 begin
-    (SELECT * FROM roles WHERE Rol_Id = p_Rol_Id);
+    (SELECT * FROM Roles WHERE Rol_Id = p_Rol_Id);
 end ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1522,7 +1522,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Select_Usuario`(p_Username VARCHAR(24))
 begin
-    (SELECT * FROM usuarios WHERE Username = p_Username);
+    (SELECT * FROM Usuarios WHERE Username = p_Username);
 end ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1549,7 +1549,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Update_Adjunto`(
     IN p_User_Created VARCHAR(24)
 )
 BEGIN
-    UPDATE adjuntos
+    UPDATE Adjuntos
     SET Filename 	= p_Filename,
         Created 	= p_Created,
         User_Created = p_User_Created
@@ -1581,7 +1581,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Update_Check_List`(
     IN p_Activo INT
 )
 BEGIN
-    UPDATE check_list
+    UPDATE Check_List
     SET 
 		Item 			= p_Item,
         Activo 			= p_Activo,
@@ -1613,7 +1613,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Update_Detalle_Revision`(
     IN p_Fecha DATETIME
 )
 BEGIN
-    UPDATE detalle_revision
+    UPDATE Detalle_Revision
     SET Marcado = p_Marcado,
         Fecha = p_Fecha
     WHERE Check_List_Id 	= p_Check_List_Id
@@ -1641,7 +1641,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Update_EstadoProyecto`(
     IN p_Estado VARCHAR(24)
 )
 BEGIN
-    UPDATE proyectos
+    UPDATE Proyectos
     SET 		
         Estado 		= p_Estado
     WHERE 
@@ -1667,7 +1667,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Update_Etapa`(
     IN p_Etapa VARCHAR(24)
 )
 BEGIN
-    UPDATE etapas
+    UPDATE Etapas
     SET 
 		Etapa 		= p_Etapa
     WHERE 
@@ -1696,7 +1696,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Update_Proyecto`(
     IN p_Estado VARCHAR(24)
 )
 BEGIN
-    UPDATE proyectos
+    UPDATE Proyectos
     SET 
 		Nombre 		= p_Nombre,
         User_Create = p_User_Create,
@@ -1738,7 +1738,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Update_Proy_Etapa`(
     IN p_Fecha_Final DATETIME
 )
 BEGIN
-    UPDATE proy_etapas
+    UPDATE Proy_Etapas
     SET 
 		Estado 				= p_Estado,
         Dev 				= p_Dev,
@@ -1780,7 +1780,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Update_Proy_User`(
     IN p_Estado VARCHAR(24)
 )
 BEGIN
-    UPDATE proy_users
+    UPDATE Proy_Users
     SET Fecha = p_Fecha,
         Estado = p_Estado
     WHERE Proyecto_Id = p_Proyecto_Id
@@ -1815,7 +1815,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Update_Revision`(
 	IN p_Tiempo_Resolucion INT
 )
 BEGIN
-    UPDATE revision
+    UPDATE Revision
     SET 
 		  Fecha 			= p_Fecha
         , Estado 			= p_Estado
@@ -1852,7 +1852,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Update_Rol`(
     IN p_Estado VARCHAR(24)
 )
 BEGIN
-    UPDATE roles
+    UPDATE Roles
     SET Rolname = p_Rolname,
         Estado = p_Estado
     WHERE Rol_Id = p_Rol_Id;
@@ -1877,7 +1877,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Update_Tipo_Test`(
     IN p_Tipo VARCHAR(24)
 )
 BEGIN
-    UPDATE tipos_test
+    UPDATE Tipos_Test
     SET Tipo = p_Tipo
     WHERE Tipo_Test_Id = p_Tipo_Test_Id;
 END ;;
@@ -1907,7 +1907,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Update_Usuario`(
     -- IN p_User_Create VARCHAR(24)
 )
 BEGIN
-    UPDATE usuarios
+    UPDATE Usuarios
     SET Fullname 	= p_Fullname,
 		Email 		= p_Email,
         Estado 		= p_Estado,

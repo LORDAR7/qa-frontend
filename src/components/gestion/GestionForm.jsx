@@ -121,7 +121,7 @@ const GestionForm = ({fronted,backend})=> {
         const data = await response.json();
         //console.log(data);
         //setEstados(data.filter(estado => estado.Etapa_Id === null)); etapa_id is null para todas las etapas 
-        setEstados(data);       
+        await setEstados(data);       
         // setEstado(data[0].estado); // se toma el primer valor del combo box
     }
 
@@ -155,8 +155,8 @@ const GestionForm = ({fronted,backend})=> {
             await getProyEtapa(proyId,data)        
         }
         else {
-            setEtapa(data[0].Etapa)
-            setRevision(1)
+            await setEtapa(data[0].Etapa)
+            await setRevision(1)
         }
         return data; // all
     }
@@ -212,6 +212,46 @@ const GestionForm = ({fronted,backend})=> {
             return data[0];
         }
     }
+
+    const insertRevision = async (id,etapaId,) =>{                
+        // DTO : Data Transfer Object ( Sirve para transferencia entre el Frontend y Backend)
+        const datos = {        
+            Proyecto_Id: id ,
+            Etapa_Id: etapaId ,        
+            Revision_Id: 1 ,    
+            Fecha: moment(new Date()).format('YYYY-MM-DD'),
+            Estado: 'En Proceso'
+        };
+
+        console.log('insertRevision',datos);
+
+        await fetch(backend+'/api/qa/revision', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(datos),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('insertRevision:', data);
+            
+            if( data.affectedRows == 1 ) { // backend envia el id
+                
+                return 1
+            }
+            else {
+                console.error("MySQL insertRevision: ",data);
+                
+                return data;
+            }
+        })
+        .catch(error => {
+            
+            console.error("API insertRevision: ",error);
+            return error;
+        });
+    };      
 
     // Evento Page Load 
     useEffect( ()=> {
@@ -285,12 +325,15 @@ const GestionForm = ({fronted,backend})=> {
     
     // Funcion para agregar una nueva etapa a un proyecto 
     const addUpdateEtapa = async (id) =>{     
-        console.log(id) 
-        setProyectoId(id)
+        await setProyectoId(id)
+        console.log('addUpdateEtapa id',id) 
+        console.log('etapas ',etapas )
+        console.log('proy_etapa ',proy_etapa )
+
         // DTO : Data Transfer Object ( Sirve para transferencia entre el Frontend y Backend) 
         const datos = {           
             id      ,  
-            etapaId : proy_etapa.Etapa_Id,
+            etapaId : proy_etapa.length>0 ? proy_etapa.Etapa_Id : 1,
             estado: 'En Proceso',
             dev,
             tester,
@@ -322,7 +365,11 @@ const GestionForm = ({fronted,backend})=> {
             if( data.affectedRows === 1 ) {
                 // console.log('Etapa: API Success'); 
                 //console.log(data);
-                Notificacion("Proyecto guardado correctamente.");                 
+                Notificacion("Proyecto guardado correctamente.");   
+
+                insertRevision(id, proy_etapa.length>0 ? proy_etapa.Etapa_Id : 1)
+        
+                navigate('/proyecto/'+id)
                 return "OK";
             } else {
                 console.error("addUpdateEtapa MySQL",data);
@@ -338,10 +385,11 @@ const GestionForm = ({fronted,backend})=> {
         });
     }
     
-    const createNewGestion = (valid) => {
+    const createNewGestion = async (valid) => {
         if( valid === true ) {
-            const id = addNewProyecto();
-            console.log("id", id);
+            const id = await addNewProyecto();
+            console.log("createNewGestion id", id);
+            return id
         }
     }
 
@@ -361,7 +409,7 @@ const GestionForm = ({fronted,backend})=> {
                 }
             })
             .then(response => {
-                console.log('Attach:', response.data); // devuelve el nombre del archivo con su ID
+                // console.log('Attach:', response.data); // devuelve el nombre del archivo con su ID
                 switch( opc ){
                     case 1 : setManualTecnico(response.data)
                     break
@@ -386,7 +434,7 @@ const GestionForm = ({fronted,backend})=> {
             cantidad
         }
                 
-        console.log(datos);
+        // console.log(datos);
         
         await fetch(backend+'/api/qa/dashboard', {
             method: 'PUT',
@@ -397,7 +445,7 @@ const GestionForm = ({fronted,backend})=> {
         })
         .then(response => response.json())
         .then(data => {
-            console.log('updateDashboard:', data);
+            // console.log('updateDashboard:', data);
             
             if( data.affectedRows === 1 ) {
                 //console.log('Etapa: API Success',data);                 
@@ -417,7 +465,7 @@ const GestionForm = ({fronted,backend})=> {
     const updateProyecto = async () =>{                
         // DTO : Data Transfer Object ( Sirve para transferencia entre el Frontend y Backend)
         const datos = {        
-            proy_id: proyectId,
+            proy_id: proyectId ? proyectId : proy_id,
             proyName,
             user: po,
             created,
@@ -435,7 +483,7 @@ const GestionForm = ({fronted,backend})=> {
         })
         .then(response => response.json())
         .then(data => {
-             console.log('updateProyecto affectedRows:', data.affectedRows);
+            console.log('updateProyecto affectedRows:', data.affectedRows);
             
             if( data.affectedRows == 1 ) { // backend envia el id
                 // console.log('Proyecto: API Success',data);                 
@@ -542,18 +590,22 @@ const GestionForm = ({fronted,backend})=> {
             // console.log('manualTecnico',manualTecnico);   
             // console.log('manualDeploy',manualDeploy);   
             // console.log('cronograma',cronograma); 
-            console.log('proyectId: ',proyectId)  
-            console.log('proy_etapa: ',proy_etapa)  
-
-            if( proyectId==0 ) //&& proy_etapa.Etapa_Id == 1 
+            console.log('proyectId == undefined: ',proyectId)  
+            console.log('proy_id == undefined: ',proy_id)  
+            console.log('handlerSubmit proy_etapa: ',proy_etapa)
+            console.log('handlerSubmit etapa: ',etapa)
+ 
+            if( proy_id == undefined && (proyectId == undefined || proyectId == 0) ) // proyectId==0  //&& proy_etapa.Etapa_Id == 1 
             {
-                createNewGestion(true);
+                const id = await createNewGestion(true);
+                console.log('handlerSubmit id', id )
+                await setProyectoId(id)
 
                 updateDashboard(1,1) // revision
             }
             else {
                 updateProyecto()
-            }
+            } 
         }
     }
 
@@ -639,12 +691,12 @@ const GestionForm = ({fronted,backend})=> {
 
             <div className="col-md-4">
                 <label htmlFor="proyName" className="form-label">Nombre del proyecto</label>
-                <input value={proyName} type="text" onChange={onChangeProyName} name="proyName" className="form-control"/>
+                <input value={proyName} type="text" onChange={onChangeProyName} id="proyName" className="form-control"></input>
             </div>
 
             <div className="col-md-4">
-                <label htmlFor="" className="form-label">Producto Owner</label> 
-                <select name="po" value={po} onChange={onChangeUser} onClick={onChangeUser} className="form-select" >
+                <label htmlFor="po" className="form-label">Producto Owner</label> 
+                <select id="po" value={po} onChange={onChangeUser} onClick={onChangeUser} className="form-select" >
                     <option value=' '></option>
                     {users.map((item, index)=>(
                         <option key={index} value={item.Fullname}>{item.Fullname}</option>
@@ -653,8 +705,8 @@ const GestionForm = ({fronted,backend})=> {
             </div> 
 
             <div className="col-md-3">
-                <label htmlFor="" className="form-label">Fecha de creación</label>
-                <input type="date" value={created} onChange={onChangeCreated} onClick={onChangeCreated} name="created" className="form-control"/>
+                <label htmlFor="created" className="form-label">Fecha de creación</label>
+                <input type="date" value={created} onChange={onChangeCreated} onClick={onChangeCreated} id="created" name="created" className="form-control"></input>
             </div>       
 
         </div>
@@ -662,8 +714,8 @@ const GestionForm = ({fronted,backend})=> {
         <div className="row mt-3" style={{display: user.rol_id == 2 ?'none': 'flex' }}>
 
             <div className="col-md-4">
-                <label htmlFor="" className="form-label">Estado de Proyecto</label>                         
-                <select name="estado" value={estado} onChange={onChangeEstado} onClick={onChangeEstado} className="form-select" >
+                <label htmlFor="estado" className="form-label">Estado de Proyecto</label>                         
+                <select id="estado" value={estado} onChange={onChangeEstado} onClick={onChangeEstado} className="form-select" >
                     <option value=' '></option>
                     {estados.map((item, index)=>(
                         <option key={index} value={item.estado}>{item.estado}</option>
@@ -673,12 +725,12 @@ const GestionForm = ({fronted,backend})=> {
             
             <div className="col-md-4 mt-2">
                 <label className="control-label">Etapa</label>
-                <input value={etapa} type="text" name="etapa" className="form-control" readOnly={true} />
+                <input value={etapa} type="text" id="etapa" className="form-control" readOnly={true} />
             </div>
 
             <div className="col-lg-3 col-md-3 col-sm-6 col-xs-12 mt-2">
                 <label htmlFor="revision" className="control-label">Revisión</label>                    
-                <input value={revision}  type="text" name="revision" readOnly={true} className="form-control right" />
+                <input value={revision}  type="text" id="revision" readOnly={true} className="form-control right" />
             </div>
 
         </div>
@@ -691,7 +743,7 @@ const GestionForm = ({fronted,backend})=> {
             
             <div className="col-lg-3 col-md-4 col-sm-6 col-xs-12">
                 <label htmlFor="dev" className="control-label">Developer</label>
-                <select name="dev" value={dev} onChange={onChangeDev} onClick={onChangeDev} className="form-select" >
+                <select id="dev" value={dev} onChange={onChangeDev} onClick={onChangeDev} className="form-select" >
                     <option value=' '></option>
                     {devs.map((item, index)=>(
                         <option key={index} value={item.Fullname}>{item.Fullname}</option>
@@ -701,13 +753,13 @@ const GestionForm = ({fronted,backend})=> {
 
             <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                 <label className="control-label">Manual Técnico</label>
-                <input  type="file" name="manualTecnico" onChange={onChangeManualTecnico} className="form-control" id="manualTec"/>
+                <input  type="file" id="manualTecnico" onChange={onChangeManualTecnico} className="form-control" id="manualTec"/>
                 {/* value={manualTecnico} no works */}
             </div>
             
             <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                 <label className="control-label">Código Fuente</label>
-                <input  type="file" name="manualDespliegue" onChange={onChangeManualDeploy} className="form-control" />
+                <input  type="file" id="manualDespliegue" onChange={onChangeManualDeploy} className="form-control" />
                 {/* value={manualDeploy} no works */}
             </div>
 
@@ -721,7 +773,7 @@ const GestionForm = ({fronted,backend})=> {
             
             <div className="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                 <label htmlFor="tester" className="control-label">QA Tester</label>
-                <select name="tester" value={tester} onChange={onChangeTester} onClick={onChangeTester} className="form-select" >
+                <select id="tester" value={tester} onChange={onChangeTester} onClick={onChangeTester} className="form-select" >
                     <option value=' '></option>
                     {testers.map((item, index)=>(
                         <option key={index} value={item.Fullname}>{item.Fullname}</option>
@@ -731,7 +783,7 @@ const GestionForm = ({fronted,backend})=> {
 
             <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                 <label className="control-label">Cronograma</label>
-                <input  type="file" name="cronograma" onChange={onChangeCronograma} className="form-control" />
+                <input  type="file" id="cronograma" onChange={onChangeCronograma} className="form-control" />
                 {/* value={cronograma} no works */}
             </div>
         </div>
